@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html ng-app="BrainGround">
+<head>
+	<meta charset="UTF-8">
+	<title>BrainGround | BrainGround Prototype Demo</title>
+	<meta name="description" content="BrainGround, Collaboration is in the air!">
+	<meta name="keywords" content="BrainGround, collaboration">
+	<meta name="author" content="BrainGround">
+	
+	<!-- Mobile Specific Meta -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
+	
+	<!-- javascripts -->
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script> 
+	<script src="js/brainground.js"></script>	
+	<!-- ./ javascripts -->
+
+	<!-- CSS -->
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/roboto.min.css" rel="stylesheet">
+    <link href="css/material.min.css" rel="stylesheet">
+    <link href="css/ripples.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/brainground.css">
+	<!-- ./ CSS -->
+</head>
+
+<body ng-controller="MainCtrl">
+	<!-- Start Header Section -->
+	<div class="navbar navbar-inverse">
+	    <div class="navbar-header">
+	        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	        </button>
+	        <a class="navbar-brand" href="javascript:void(0)">BrainGround</a>
+	    </div>
+	    <div class="navbar-collapse collapse navbar-inverse-collapse">
+	    	<ul class="nav navbar-nav">
+            	<li class="active"><a href="javascript:void(0)">Demo Board</a></li>
+        	</ul>
+
+	        <ul class="nav navbar-nav navbar-right">
+	        	<li><a href="javascript:void(0)" data-toggle="modal" data-target="#aboutModal">About</a></li>
+	            <li class="dropdown">
+	                <a href="javascript:void(0)" data-target="#" class="dropdown-toggle" data-toggle="dropdown">Share <b class="caret"></b></a>
+	                <ul class="dropdown-menu">
+	                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#shareModal">Share BrainBoard</a></li>
+	                    <li><a href="javascript:void(0)">Send E-Mail</a></li>
+	                    <li class="divider"></li>
+	                    <li><a href="javascript:void(0)">Export to PDF</a></li>
+	                </ul>
+	            </li>
+	        </ul>
+	    </div>
+	</div>
+	<!-- End Header Section -->
+    <!-- <button id="createButton" ng-click="createNote()" class="btn btn-default navbar-btn">New BrainCard</button> -->
+    <a ng-click="createNote()" class="btn btn-danger btn-fab btn-raised mdi-image-edit add-note-button"></a>
+
+	<div data-brain-card ng-repeat="note in notes" note="note" class="panel panel-default sticky-note post-it-yellow" ondelete="deleteNote(id)">
+		<div class="panel-body">
+			<button type="button" class="close" ng-click="deleteNote(note.id)">&times;</button>
+			<!-- <input data-ng-model="note.title" data-ng-change="updateNote(note)" type="text" class="title" > -->
+			<textarea rows="3" cols="20" data-ng-model="note.body" data-ng-change="updateNote(note)" class="body braincard" placeholder="Your idea...">{{note.body}}</textarea>
+		</div>
+	</div>
+
+	<!-- About modal dialog -->
+	<div class="modal fade" role="dialog" aria-labelledby="aboutModal" id="aboutModal">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	                <h4 class="modal-title">About BrainGround</h4>
+	            </div>
+	            <div class="modal-body">
+	            	<br />
+	                <p>BrainGround is an online collaboration tool. With BrainGround, collaboration is in the air!</p>
+	                <br />
+	                Brought to you by
+	                <br /><br />
+	                <div class="container-fluid">
+						<div class="row">
+							<div class="col-md-3">
+								<img src="images/amp.png" class="img-circle" width="100"><br /> 
+								<center>Wichanart Wangkiat</center>
+							</div>
+							<div class="col-md-3">
+								<img src="images/harp.png" class="img-circle" width="100">
+								<center>Pakorn Wuttivichayanun</center>
+							</div>
+							<div class="col-md-3">
+								<img src="images/tar.png" class="img-circle" width="100">
+								<center>Satjakarn Vutinuntakasame</center>
+							</div>
+							<div class="col-md-3">
+								<img src="images/gag.png" class="img-circle" width="100">
+								<center>Jirach Suthammanas</center>
+							</div>
+						</div>
+					</div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn btn-primary" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- ./About modal dialog -->
+
+	<!-- Share modal dialog -->
+	<div class="modal fade" role="dialog" aria-labelledby="shareModal" id="shareModal">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	                <h4 class="modal-title"><i class="mdi-social-share"></i> Share your BrainGround</h4>
+	            </div>
+	            <div class="modal-body">
+	            	<br /><br />
+	                <p>Below is your BrainGround URL. Share it with your friends and start collaborate!</p>
+	                <form>
+	                <input type="text" class="form-control" name="BG_URL" value="http://brainground/Demo_Board" autofocus="" />
+	            	</form>
+	            	<br /><br />
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn btn-primary" data-dismiss="modal">Close</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!-- ./Share modal dialog -->
+
+	<!-- javascripts -->
+	<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+	<script src="js/ripples.min.js"></script>
+	<script src="js/material.min.js"></script>
+	<script>
+		$(document).ready(function() {
+		    // Initialize material design 
+		    $.material.init();
+
+		    //Show Share Modal
+		    $('#shareModal').modal('show');
+		});
+	</script>
+	<!-- ./javascript -->
+</body>
+</html>
